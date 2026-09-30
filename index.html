@@ -3,249 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic AI Console</title>
+    <title>AI Assistant</title>
     <!-- Include the Puter.js SDK -->
-    <script src="https://js.puter.com/v2/"></script>
+    <script src="https://puter.com"></script>
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --panel-bg: #111827;
-            --neon-cyan: #00f2fe;
-            --neon-pink: #f35588;
-            --text-main: #e5e7eb;
-            --border-color: #1f2937;
+        * {
+            box-sizing: border-box;
         }
         body { 
             font-family: 'Courier New', Courier, monospace; 
-            background-color: var(--bg-color); 
-            color: var(--text-main);
+            background-color: #000000; 
+            color: #ffffff;
             margin: 0; 
-            padding: 20px; 
+            padding: 40px 20px; 
             display: flex; 
-            justify-content: center; 
-            align-items: center;
-            height: 90vh;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .chat-container { 
-            width: 100%; 
-            max-width: 700px; 
-            background: var(--panel-bg); 
-            border-radius: 12px; 
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2); 
-            display: flex; 
-            flex-direction: column; 
-            height: 80vh; 
-            overflow: hidden; 
+        .main-layout {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
-        .chat-header { 
-            background: #1f2937; 
-            color: var(--neon-cyan); 
-            padding: 15px; 
-            font-size: 1.1rem; 
+        .site-header { 
+            color: #ffffff; 
+            padding-bottom: 20px; 
+            font-size: 1.2rem; 
             font-weight: bold; 
-            text-align: center; 
-            border-bottom: 2px solid var(--neon-cyan);
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px rgba(0, 242, 254, 0.6);
+            border-bottom: 1px solid #ffffff;
+            letter-spacing: 1px;
         }
-        .chat-box { 
+        .chat-area { 
             flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
+            padding: 30px 0; 
             display: flex; 
             flex-direction: column; 
-            gap: 15px; 
-            background: radial-gradient(circle at top, #161d30, #0b0f19);
+            gap: 24px; 
         }
-        .message { 
-            padding: 12px 16px; 
-            border-radius: 8px; 
-            max-width: 80%; 
-            word-wrap: break-word; 
-            line-height: 1.5;
-            font-size: 0.95rem;
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
         }
-        .user-msg { 
-            background: rgba(0, 242, 254, 0.1); 
-            align-self: flex-end; 
-            color: var(--neon-cyan); 
-            border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0, 242, 254, 0.2);
+        .sender-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
         }
-        .ai-msg { 
-            background: rgba(243, 85, 136, 0.1); 
-            align-self: flex-start; 
-            color: #ff7ebb; 
-            border: 1px solid var(--neon-pink);
-            box-shadow: 0 0 8px rgba(243, 85, 136, 0.2);
+        .message-text { 
+            line-height: 1.6;
+            font-size: 1rem;
+            white-space: pre-wrap;
+        }
+        .image-wrapper {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
         }
         .generated-image {
             max-width: 100%;
-            border-radius: 8px;
-            border: 2px solid var(--neon-cyan);
-            margin-top: 8px;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            max-height: 500px;
+            border: 1px solid #ffffff;
         }
-        .input-area { 
+        .download-btn {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+        }
+        .download-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+        .input-wrapper { 
             display: flex; 
-            border-top: 2px solid var(--border-color); 
-            padding: 15px; 
-            background: var(--panel-bg); 
+            border-top: 1px solid #ffffff; 
+            padding-top: 20px; 
+            margin-top: auto;
         }
         input { 
             flex: 1; 
-            padding: 12px; 
-            background: #0b0f19;
-            border: 1px solid var(--border-color); 
-            color: var(--text-main);
-            border-radius: 6px; 
+            padding: 14px; 
+            background: #000000;
+            border: 1px solid #ffffff; 
+            color: #ffffff;
             font-size: 1rem; 
             outline: none; 
-        }
-        input:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
+            font-family: inherit;
         }
         button { 
-            background: transparent; 
-            color: var(--neon-cyan); 
-            border: 1px solid var(--neon-cyan); 
-            padding: 0 25px; 
+            background: #000000; 
+            color: #ffffff; 
+            border: 1px solid #ffffff; 
+            padding: 0 30px; 
             margin-left: 12px; 
-            border-radius: 6px; 
             cursor: pointer; 
             font-size: 1rem; 
             font-family: inherit;
             text-transform: uppercase;
-            transition: all 0.3s;
         }
         button:hover { 
-            background: var(--neon-cyan); 
-            color: #000;
-            box-shadow: 0 0 15px var(--neon-cyan);
+            background: #ffffff; 
+            color: #000000;
         }
-        button:disabled { 
-            border-color: #4b5563;
-            color: #4b5563; 
+        button:disabled, input:disabled { 
+            opacity: 0.5;
             cursor: not-allowed; 
-            box-shadow: none;
         }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">SYSTEM CORE // AI CONSOLE v2.6</div>
-    <div class="chat-box" id="chatBox">
-        <div class="message ai-msg">INITIALIZED... Type naturally to chat, or type "/image [description]" to synthesize graphics.</div>
+<div class="main-layout">
+    <div class="site-header">AI CORE INTERFACE</div>
+    <div class="chat-area" id="chatArea">
+        <div class="message-row">
+            <div class="sender-label">AI:</div>
+            <div class="message-text">Interface ready. Type naturally to chat, or execute "/image [description]" to generate visual assets.</div>
+        </div>
     </div>
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Query terminal or build image..." onkeydown="if(event.key === 'Enter') handleInput()">
-        <button id="sendBtn" onclick="handleInput()">Execute</button>
+    <div class="input-wrapper">
+        <input type="text" id="userInput" placeholder="Type a message or /image command..." onkeydown="if(event.key === 'Enter') handleInput()">
+        <button id="sendBtn" onclick="handleInput()">Send</button>
     </div>
 </div>
 
 <script>
-    const chatBox = document.getElementById('chatBox');
+    const chatArea = document.getElementById('chatArea');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    // 1. Maintain conversation context history dynamically
     let conversationHistory = [
-        { role: 'system', content: 'You are a futuristic terminal assistant. Keep responses relatively concise and cyberpunk-themed.' }
+        { role: 'system', content: 'You are a stark, minimal AI assistant. Provide clean, direct text outputs without formatting fluff.' }
     ];
 
-    function appendMessage(text, isUser, elementToAppend = null) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', isUser ? 'user-msg' : 'ai-msg');
-        
+    function appendMessage(text, isUser, complexElement = null) {
+        const row = document.createElement('div');
+        row.classList.add('message-row');
+
+        const label = document.createElement('div');
+        label.classList.add('sender-label');
+        label.innerText = isUser ? 'YOU:' : 'AI:';
+        row.appendChild(label);
+
         if (text) {
-            msgDiv.innerText = text;
+            const body = document.createElement('div');
+            body.classList.add('message-text');
+            body.innerText = text;
+            row.appendChild(body);
         }
-        if (elementToAppend) {
-            msgDiv.appendChild(elementToAppend);
+
+        if (complexElement) {
+            row.appendChild(complexElement);
         }
         
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatArea.appendChild(row);
+        window.scrollTo(0, document.body.scrollHeight);
     }
 
     async function handleInput() {
         const text = userInput.value.trim();
         if (!text) return;
 
-        // Display user input text
         appendMessage(text, true);
         userInput.value = '';
         
-        // Lock interactive UI
         userInput.disabled = true;
         sendBtn.disabled = true;
 
-        // Check if the user is calling the OpenAI image generator
         if (text.toLowerCase().startsWith('/image ')) {
-            const prompt = text.substring(7); // Strip off the "/image " prefix
+            const prompt = text.substring(7); 
             await generateAIImage(prompt);
         } else {
             await streamTextChat(text);
         }
 
-        // Unlock interactive UI
         userInput.disabled = false;
         sendBtn.disabled = false;
         userInput.focus();
     }
 
-    // 2. Chat method that appends and preserves operational context history
     async function streamTextChat(userText) {
-        // Track context history
         conversationHistory.push({ role: 'user', content: userText });
 
-        const loadingDiv = document.createElement('div');
-        loadingDiv.classList.add('message', 'ai-msg');
-        loadingDiv.innerText = "COMPUTING MULTI-TURN DATA...";
-        chatBox.appendChild(loadingDiv);
+        const loadingRow = document.createElement('div');
+        loadingRow.classList.add('message-row');
+        loadingRow.innerHTML = '<div class="sender-label">AI:</div><div class="message-text">Processing request...</div>';
+        chatArea.appendChild(loadingRow);
 
         try {
-            // Puter.js accepts an array directly to carry the historical context state
             const response = await puter.ai.chat(conversationHistory, { model: 'openai/gpt-5.5' });
+            loadingRow.remove();
             
-            loadingDiv.remove();
-            
-            // Append response text to the UI layout
-            appendMessage(response, false);
+            let aiText = "";
+            if (response && response.message && response.message.content) {
+                aiText = response.message.content;
+            } else if (typeof response === 'string') {
+                aiText = response; 
+            } else {
+                aiText = JSON.stringify(response);
+            }
 
-            // Record response structure back into history array for next prompts
-            conversationHistory.push({ role: 'assistant', content: response });
+            appendMessage(aiText, false);
+            conversationHistory.push({ role: 'assistant', content: aiText });
         } catch (error) {
-            loadingDiv.remove();
-            appendMessage("SYSTEM CRITICAL ERROR: Communication thread failed.", false);
+            loadingRow.remove();
+            appendMessage("Error: Failed to connect to core service.", false);
             console.error(error);
         }
     }
 
-    // 3. Puter OpenAI Image Generation Integration
     async function generateAIImage(promptText) {
-        const loadingDiv = document.createElement('div');
-        loadingDiv.classList.add('message', 'ai-msg');
-        loadingDiv.innerText = `SYNTHESIZING GRAPHIC RESOURCE: "${promptText}"...`;
-        chatBox.appendChild(loadingDiv);
+        const loadingRow = document.createElement('div');
+        loadingRow.classList.add('message-row');
+        loadingRow.innerHTML = `<div class="sender-label">AI:</div><div class="message-text">Synthesizing image for: "${promptText}"...</div>`;
+        chatArea.appendChild(loadingRow);
 
         try {
-            // Puter built-in txt2img leverages OpenAI graphics engine layers completely free
             const imgElement = await puter.ai.txt2img(promptText, { model: 'gpt-image-2.5-flare' });
+            loadingRow.remove();
             
-            loadingDiv.remove();
-            
-            // Format returning object into styles matching dark design layout
-            imgElement.classList.add('generated-image');
-            
-            // Inject into UI stack
-            appendMessage(`Graphic successfully compiled for prompt: "${promptText}"`, false, imgElement);
+            let finalSrc = "";
+            if (imgElement instanceof HTMLElement) {
+                finalSrc = imgElement.src;
+            } else if (imgElement && imgElement.src) {
+                finalSrc = imgElement.src;
+            }
+
+            if (finalSrc) {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('image-wrapper');
+
+                const newImg = document.createElement('img');
+                newImg.src = finalSrc;
+                newImg.classList.add('generated-image');
+                wrapper.appendChild(newImg);
+
+                // Add Download Button functionality
+                const dlBtn = document.createElement('button');
+                dlBtn.classList.add('download-btn');
+                dlBtn.innerText = "Download Image";
+                dlBtn.onclick = async () => {
+                    try {
+                        const response = await fetch(finalSrc);
+                        const blob = await response.blob();
+                        const blobUrl = URL.createObjectURL(blob);
+                        
+                        const link = document.createElement('a');
+                        link.href = blobUrl;
+                        link.download = `ai-image-${Date.now()}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(blobUrl);
+                    } catch (e) {
+                        // Fallback open in case of CORS limits on browser configurations
+                        window.open(finalSrc, '_blank');
+                    }
+                };
+                wrapper.appendChild(dlBtn);
+
+                appendMessage(`Asset rendered for: "${promptText}"`, false, wrapper);
+            } else {
+                appendMessage("Error: Output missing visual format.", false);
+            }
         } catch (error) {
-            loadingDiv.remove();
-            appendMessage("GRAPHICS RENDERING ERROR: Failed to process graphic sequence.", false);
+            loadingRow.remove();
+            appendMessage("Error: Failed to construct visual request.", false);
             console.error(error);
         }
     }
