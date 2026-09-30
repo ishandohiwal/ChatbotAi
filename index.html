@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puter AI Chatbot</title>
+    <!-- 1. Include the Puter.js SDK from CDN -->
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 80vh; overflow: hidden; }
+        .chat-header { background: #4A90E2; color: white; padding: 15px; font-size: 1.2rem; font-weight: bold; text-align: center; }
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px 15px; border-radius: 8px; max-width: 75%; word-wrap: break-word; line-height: 1.4; }
+        .user-msg { background: #DCF8C6; align-self: flex-end; color: #333; }
+        .ai-msg { background: #EAEAEA; align-self: flex-start; color: #333; }
+        .input-area { display: flex; border-top: 1px solid #ddd; padding: 10px; background: #fff; }
+        input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; outline: none; }
+        button { background: #4A90E2; color: white; border: none; padding: 0 20px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #357ABD; }
+        button:disabled { background: #cccccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">Puter AI Assistant (OpenAI Model)</div>
+    <div class="chat-box" id="chatBox">
+        <div class="message ai-msg">Hello! Ask me anything.</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chatBox');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Helper to append messages to the chat window
+    function appendMessage(text, isUser) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', isUser ? 'user-msg' : 'ai-msg');
+        msgDiv.innerText = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // Display user text and lock input fields
+        appendMessage(text, true);
+        userInput.value = '';
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        // Temporary AI loading message
+        const loadingDiv = document.createElement('div');
+        loadingDiv.classList.add('message', 'ai-msg');
+        loadingDiv.innerText = "Thinking...";
+        chatBox.appendChild(loadingDiv);
+
+        try {
+            // 2. Query Puter's OpenAI interface 
+            const response = await puter.ai.chat(text, { model: 'openai/gpt-5.5' });
+            
+            // Remove loading text and append final AI response
+            loadingDiv.remove();
+            appendMessage(response, false);
+        } catch (error) {
+            loadingDiv.remove();
+            appendMessage("Error: Could not fetch response. Please verify you are logged into Puter.", false);
+            console.error("Puter Error:", error);
+        } finally {
+            // Unlock UI elements
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+    }
+</script>
+
+</body>
+          </html>
